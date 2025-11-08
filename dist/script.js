@@ -1,52 +1,51 @@
-window.addEventListener("DOMContentLoaded", domLoaded);
+let taskList = document.querySelector("#taskList");
+
+document.addEventListener("DOMContentLoaded", domLoaded);
 
 function domLoaded() {
-  const addBtn = document.querySelector("#addBtn");
-  const taskInput = document.querySelector("#taskInput");
+    const addBtn = document.getElementById("addBtn");
+    addBtn.addEventListener("click", addBtnClick);
 
-  addBtn.addEventListener("click", addBtnClick);
+    const textBox = document.getElementById("taskInput");
+    textBox.addEventListener("keyup", (event) => {
+        if (event.code == "Enter") {
+            addBtnClick();
+        };
+    });
 
-  taskInput.addEventListener("keyup", function (event) {
-    if (event.key === "Enter") {
-      addBtnClick();
-    }
-  });
-
-  const existingBtns = document.querySelectorAll(".done-btn");
-  existingBtns.forEach(btn => {
-    btn.addEventListener("click", removeTask);
-  });
+    const existingBtns = document.querySelectorAll(".done-btn");
+    existingBtns.forEach(btn => {
+        btn.addEventListener("click", removeTask);
+    });
 }
 
 function addBtnClick() {
-  const taskInput = document.querySelector("#taskInput");
-  const taskText = taskInput.value.trim();
+    let taskInpt = document.getElementById("taskInput");
+    let taskText = taskInpt.value.trim();
 
-  if (taskText === "") {
-    return;
-  }
-
-  addTask(taskText);
-
-  taskInput.value = "";
-  taskInput.focus();
+    if (taskText.length === 0) {
+        console.log("Empty list input!");
+        taskInpt.value = "";
+        taskInpt.focus();
+    } else {
+        addTask(taskText);
+        taskInpt.value = "";
+        taskInpt.focus();
+    }
 }
 
-function addTask(newTask) {
-  const taskList = document.querySelector("#taskList");
+function addTask(taskInpt) {
+    let newTask = document.createElement("li");
+    newTask.innerHTML = "<span class='task-text'>" + "  " + taskInpt + "  " + "</span><button class='done-btn'>&#10006;</button>"; 
+    taskList.appendChild(newTask);
 
-  const li = document.createElement("li");
-  li.innerHTML = `<span class="task-text">${newTask}</span><button class="done-btn">&#10006;</button>`;
-
-  taskList.appendChild(li);
-
-  const doneBtns = document.querySelectorAll(".done-btn");
-  const lastBtn = doneBtns[doneBtns.length - 1];
-  lastBtn.addEventListener("click", removeTask);
+    const doneButtons = document.querySelectorAll(".done-btn");
+    doneButtons.forEach(button => {
+        button.addEventListener("click", removeTask);
+    });
 }
 
 function removeTask(event) {
-  const li = event.target.parentNode; 
-  const ol = li.parentNode;            
-  ol.removeChild(li);                  
+    let taskToRemove = event.target.parentNode;
+    taskList.removeChild(taskToRemove);
 }
